@@ -26,4 +26,14 @@ class RetireViewModel : ViewModel() {
         retireAgeInput = input
     }
 
+    var addlConInput by mutableStateOf("")
+    fun updateAddlConInput(input: String) {
+        addlConInput = input
+    }
+
+    var inflChecked by mutableStateOf(false)
+    fun updateInflChecked(input: Boolean) {
+        inflChecked = input
+    }
+
 }

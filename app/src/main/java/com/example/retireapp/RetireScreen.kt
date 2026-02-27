@@ -2,16 +2,22 @@ package com.example.retireapp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,6 +36,8 @@ fun RetireScreen(
         viewModel.annualReturnInput.toDoubleOrNull() ?: 0.0,
         viewModel.currentAgeInput.toDoubleOrNull() ?: 0.0,
         viewModel.retireAgeInput.toDoubleOrNull() ?: 0.0,
+        viewModel.addlConInput.toDoubleOrNull() ?: 0.0,
+        viewModel.inflChecked
     )
 
     Column(
@@ -46,6 +54,16 @@ fun RetireScreen(
             onValueChange = { viewModel.updateAmountInput(it) },
             modifier = modifier
         )
+        EditAddlCon(
+            value = viewModel.addlConInput,
+            onValueChange = { viewModel.updateAddlConInput(it) },
+            modifier = modifier
+            )
+        InflationCheckbox(
+            value = viewModel.inflChecked,
+            onValueChange = { viewModel.updateInflChecked(it) },
+            modifier = modifier
+            )
         EditReturn(
             value = viewModel.annualReturnInput,
             onValueChange = { viewModel.updateAnnualReturnInput(it) },
@@ -132,18 +150,67 @@ fun EditRetireAge(
     )
 }
 
+@Composable
+fun EditAddlCon(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = true,
+        label = { Text("Additional Annual Contribution ($)") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = modifier
+    )
+}
+
+@Composable
+fun InflationCheckbox(
+    value: Boolean,
+    onValueChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
+        Text(
+            "Adjust contribution for inflation?"
+        )
+        Checkbox(
+            checked = value,
+            onCheckedChange = onValueChange
+        )
+    }
+}
+
 private fun calculateNetWorth(
     amount: Double,
     annualReturn: Double,
     currentAge: Double,
-    retireAge: Double
+    retireAge: Double,
+    addlCon: Double,
+    inflChecked: Boolean,
 ): String {
     var netWorth = amount
     var time = retireAge - currentAge
+    var addlConInfl = addlCon
+    val inflation = 0.03
 
-    while (time > 0) {
-        netWorth = netWorth * (1 + annualReturn/100)
-        time = time - 1
+    if (inflChecked) {
+        while (time > 0) {
+            netWorth = netWorth * (1 + annualReturn/100) + addlConInfl
+            addlConInfl = addlConInfl * (1 + inflation)
+            time = time - 1
+        }
+    } else {
+        while (time > 0) {
+            netWorth = netWorth * (1 + annualReturn/100) + addlCon
+            time = time - 1
+        }
     }
+
     return NumberFormat.getCurrencyInstance().format(netWorth)
 }
