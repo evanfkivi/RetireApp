@@ -14,36 +14,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import java.text.NumberFormat
 
 @Composable
 fun RetireScreen(
     modifier: Modifier,
     viewModel: RetireViewModel = viewModel(),
 ) {
-
-    val netWorth = calculateNetWorth(
-        viewModel.amountInput.toDoubleOrNull() ?: 0.0,
-        viewModel.annualReturnInput.toDoubleOrNull() ?: 0.0,
-        viewModel.currentAgeInput.toDoubleOrNull() ?: 0.0,
-        viewModel.retireAgeInput.toDoubleOrNull() ?: 0.0,
-        viewModel.addlConInput.toDoubleOrNull() ?: 0.0,
-        viewModel.inflChecked
-    )
-
     Column(
         modifier = modifier
             .statusBarsPadding()
-            .padding(horizontal = 40.dp)
+            .padding(horizontal = 20.dp)
             .verticalScroll(rememberScrollState())
             .safeDrawingPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,7 +65,7 @@ fun RetireScreen(
             modifier = modifier
         )
         Text(
-            text = "Ending Net Worth: $netWorth",
+            text = "Ending Net Worth: ${viewModel.netWorth}",
             style = MaterialTheme.typography.displaySmall
         )
     }
@@ -186,31 +171,3 @@ fun InflationCheckbox(
     }
 }
 
-private fun calculateNetWorth(
-    amount: Double,
-    annualReturn: Double,
-    currentAge: Double,
-    retireAge: Double,
-    addlCon: Double,
-    inflChecked: Boolean,
-): String {
-    var netWorth = amount
-    var time = retireAge - currentAge
-    var addlConInfl = addlCon
-    val inflation = 0.03
-
-    if (inflChecked) {
-        while (time > 0) {
-            netWorth = netWorth * (1 + annualReturn/100) + addlConInfl
-            addlConInfl = addlConInfl * (1 + inflation)
-            time = time - 1
-        }
-    } else {
-        while (time > 0) {
-            netWorth = netWorth * (1 + annualReturn/100) + addlCon
-            time = time - 1
-        }
-    }
-
-    return NumberFormat.getCurrencyInstance().format(netWorth)
-}
