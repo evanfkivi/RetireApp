@@ -25,7 +25,6 @@ class RetireViewModel : ViewModel() {
     fun updateAmountInput(input: String) {
         amountInput = input
         updateNetWorth()
-
     }
 
     var annualReturnInput by mutableStateOf("")
@@ -62,8 +61,6 @@ class RetireViewModel : ViewModel() {
         inflChecked = input
         updateNetWorth()
     }
-
-
 }
 
 private fun calculateNetWorth(

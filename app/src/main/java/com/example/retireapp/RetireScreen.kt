@@ -34,14 +34,16 @@ fun RetireScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        EditNetWorth(
+        EditTextField(
             value = viewModel.amountInput,
             onValueChange = { viewModel.updateAmountInput(it) },
+            text = "Current Net Worth ($)",
             modifier = modifier
         )
-        EditAddlCon(
+        EditTextField(
             value = viewModel.addlConInput,
             onValueChange = { viewModel.updateAddlConInput(it) },
+            text = "Additional Annual Contribution ($)",
             modifier = modifier
             )
         InflationCheckbox(
@@ -49,19 +51,22 @@ fun RetireScreen(
             onValueChange = { viewModel.updateInflChecked(it) },
             modifier = modifier
             )
-        EditReturn(
+        EditTextField(
             value = viewModel.annualReturnInput,
             onValueChange = { viewModel.updateAnnualReturnInput(it) },
+            text = "Annual Return (%)",
             modifier = modifier
         )
-        EditCurrentAge(
+        EditTextField(
             value = viewModel.currentAgeInput,
             onValueChange = { viewModel.updateCurrentAgeInput(it) },
+            text = "Current Age (years)",
             modifier = modifier
         )
-        EditRetireAge(
+        EditTextField(
             value = viewModel.retireAgeInput,
             onValueChange = { viewModel.updateRetireAgeInput(it) },
+            text = "Retirement Age (years)",
             modifier = modifier
         )
         Text(
@@ -72,80 +77,17 @@ fun RetireScreen(
 }
 
 @Composable
-fun EditNetWorth(
+fun EditTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    text: String,
     modifier: Modifier = Modifier
 ) {
     TextField(
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
-        label = { Text("Current Net Worth ($)") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = modifier
-    )
-}
-
-@Composable
-fun EditReturn(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        label = { Text("Annual Return (%)") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = modifier
-    )
-}
-
-@Composable
-fun EditCurrentAge(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        label = { Text("Current Age (years)") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = modifier
-    )
-}
-
-@Composable
-fun EditRetireAge(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        label = { Text("Retirement Age (years)") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = modifier
-    )
-}
-
-@Composable
-fun EditAddlCon(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        label = { Text("Additional Annual Contribution ($)") },
+        label = { Text(text) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         modifier = modifier
     )
